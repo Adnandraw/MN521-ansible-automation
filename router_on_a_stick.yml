@@ -1,0 +1,28 @@
+---
+- name: Configure Router-on-a-Stick Sub-Interfaces
+  hosts: cisco_router
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    parent_interface: GigabitEthernet0/0
+    vlan_configs:
+      - vlan_id: 10
+        ip: 192.168.10.1
+        mask: 255.255.255.0
+      - vlan_id: 20
+        ip: 192.168.20.1
+        mask: 255.255.255.0
+
+  tasks:
+    - name: Configure router sub-interfaces for each VLAN
+      cisco.ios.ios_interface:
+        name: "{{ parent_interface }}.{{ item.vlan_id }}"
+        encapsulation:
+          dot1q: "{{ item.vlan_id }}"
+        ipv4:
+          address: "{{ item.ip }}"
+          mask: "{{ item.mask }}"
+        enabled: true
+        state: up
+      loop: "{{ vlan_configs }}"

@@ -1,0 +1,16 @@
+---
+- name: Ping from Cisco router to another device
+  hosts: cisco_router
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+    - name: Ping a target IP from router
+      cisco.ios.ios_ping:
+        dest: 192.168.1.106 
+        count: 5
+      register: ping_result
+
+    - name: Show ping result
+      debug:
+        var: ping_result

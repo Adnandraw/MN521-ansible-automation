@@ -1,0 +1,23 @@
+---
+- name: Remove VLAN 20 and reset associated interface
+  hosts: cisco_switches
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    vlan_id: 20
+    vlan_interface: GigabitEthernet0/1
+
+  tasks:
+    - name: Remove VLAN assignment from interface
+      cisco.ios.ios_l2_interface:
+        name: "{{ vlan_interface }}"
+        mode: access
+        access_vlan: 1    # default VLAN
+        state: present
+
+
+    - name: Remove VLAN 20
+      cisco.ios.ios_vlan:
+        vlan_id: "{{ vlan_id }}"
+        state: absent

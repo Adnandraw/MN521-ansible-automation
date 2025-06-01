@@ -1,0 +1,17 @@
+---
+- name: Nightly Backup of Cisco Router Configuration
+  hosts: cisco_devices
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+    - name: Collect running-config
+      cisco.ios.ios_command:
+        commands: show running-config
+      register: config_output
+
+    - name: Save config to timestamped file
+      ansible.builtin.copy:
+        content: "{{ config_output.stdout[0] }}"
+        dest: "/home/kali/Desktop/Ansible/Backups
+{{ inventory_hostname }}_{{ lookup('pipe', 'date +%Y-%m-%d') }}.txt"

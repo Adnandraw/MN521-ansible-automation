@@ -1,0 +1,15 @@
+---
+- name: Change Cisco Router Hostname
+  hosts: cisco_routers
+  gather_facts: no
+
+  collections:
+    - cisco.ios
+
+  vars:
+    new_hostname: LabRouter
+
+  tasks:
+    - name: Set hostname
+      cisco.ios.ios_hostname:
+        hostname: "{{ new_hostname }}"
